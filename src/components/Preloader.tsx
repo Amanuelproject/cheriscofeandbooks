@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import cherishLogo from '@/assets/cherish-logo.png';
 
 interface PreloaderProps {
   onComplete: () => void;
@@ -9,7 +10,6 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    // Simulate loading time for assets
     const timer = setTimeout(() => {
       setIsVisible(false);
       setTimeout(onComplete, 500);
@@ -33,15 +33,15 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-center"
           >
-            {/* Logo/Brand Name */}
-            <motion.h1
-              className="preloader-text"
-              initial={{ opacity: 0, letterSpacing: '0.3em' }}
-              animate={{ opacity: 1, letterSpacing: '0.15em' }}
-              transition={{ duration: 1, delay: 0.3 }}
+            {/* Logo in Circle */}
+            <motion.div
+              className="w-28 h-28 mx-auto mb-6 rounded-full overflow-hidden border-4 border-primary/30 shadow-2xl"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
             >
-              Cherish Addis
-            </motion.h1>
+              <img src={cherishLogo} alt="Cherish Addis" className="w-full h-full object-cover" />
+            </motion.div>
 
             {/* Decorative line */}
             <motion.div

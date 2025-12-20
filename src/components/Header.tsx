@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ShoppingBag } from 'lucide-react';
+import { useLanguage } from '@/i18n/LanguageContext';
+import LanguageSwitcher from './LanguageSwitcher';
+import cherishLogo from '@/assets/cherish-logo.png';
 
 interface HeaderProps {
   orderCount: number;
@@ -10,6 +13,7 @@ interface HeaderProps {
 const Header = ({ orderCount, onOrderClick }: HeaderProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,11 +30,11 @@ const Header = ({ orderCount, onOrderClick }: HeaderProps) => {
   };
 
   const navLinks = [
-    { label: 'About', id: 'about' },
-    { label: 'Menu', id: 'menu' },
-    { label: 'Reviews', id: 'reviews' },
-    { label: 'Visit', id: 'location' },
-    { label: 'Contact', id: 'contact' },
+    { label: t('nav.about'), id: 'about' },
+    { label: t('nav.menu'), id: 'menu' },
+    { label: t('nav.reviews'), id: 'reviews' },
+    { label: t('nav.visit'), id: 'location' },
+    { label: t('nav.contact'), id: 'contact' },
   ];
 
   return (
@@ -48,13 +52,15 @@ const Header = ({ orderCount, onOrderClick }: HeaderProps) => {
             {/* Logo */}
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="font-serif text-xl md:text-2xl tracking-wide hover:text-primary transition-colors"
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
-              Cherish Addis
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border-2 border-primary/30 shadow-lg">
+                <img src={cherishLogo} alt="Cherish Addis" className="w-full h-full object-cover" />
+              </div>
             </button>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-8">
+            <div className="hidden md:flex items-center gap-6">
               {navLinks.map((link) => (
                 <button
                   key={link.id}
@@ -66,18 +72,22 @@ const Header = ({ orderCount, onOrderClick }: HeaderProps) => {
                 </button>
               ))}
               
+              {/* Language Switcher */}
+              <LanguageSwitcher />
+              
               {/* Order Button */}
               <button
                 onClick={onOrderClick}
                 className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:bg-primary/90 transition-colors"
               >
                 <ShoppingBag className="w-4 h-4" />
-                {orderCount > 0 ? `Order (${orderCount})` : 'Order'}
+                {orderCount > 0 ? `${t('nav.order')} (${orderCount})` : t('nav.order')}
               </button>
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="flex items-center gap-4 md:hidden">
+            <div className="flex items-center gap-3 md:hidden">
+              <LanguageSwitcher />
               {orderCount > 0 && (
                 <button
                   onClick={onOrderClick}
@@ -147,7 +157,7 @@ const Header = ({ orderCount, onOrderClick }: HeaderProps) => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: navLinks.length * 0.05 }}
                   >
-                    Order Now
+                    {t('nav.orderNow')}
                   </motion.button>
                 </div>
               </div>
