@@ -1,8 +1,11 @@
 import { motion } from 'framer-motion';
 import { Instagram, Facebook, Mail, Phone, Heart } from 'lucide-react';
+import { useLanguage } from '@/i18n/LanguageContext';
+import cherishLogo from '@/assets/cherish-logo.png';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { t } = useLanguage();
 
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -14,9 +17,14 @@ const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <h3 className="font-serif text-2xl mb-4">Cherish Addis</h3>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/30">
+                <img src={cherishLogo} alt="Cherish Addis" className="w-full h-full object-cover" />
+              </div>
+              <h3 className="font-serif text-xl">Cherish Addis</h3>
+            </div>
             <p className="text-muted-foreground leading-relaxed mb-6 max-w-md">
-              A quiet space for coffee, books, and meaningful moments. Behind Abrehot Library, 4 Kilo, Addis Ababa.
+              {t('footer.tagline')}
             </p>
             
             {/* Social Links */}
@@ -58,14 +66,14 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-medium mb-4">Explore</h4>
+            <h4 className="font-medium mb-4">{t('footer.explore')}</h4>
             <ul className="space-y-3">
               {[
-                { label: 'About', id: 'about' },
-                { label: 'Menu', id: 'menu' },
-                { label: 'Reviews', id: 'reviews' },
-                { label: 'Location', id: 'location' },
-                { label: 'Contact', id: 'contact' },
+                { label: t('nav.about'), id: 'about' },
+                { label: t('nav.menu'), id: 'menu' },
+                { label: t('nav.reviews'), id: 'reviews' },
+                { label: t('nav.visit'), id: 'location' },
+                { label: t('nav.contact'), id: 'contact' },
               ].map((link) => (
                 <li key={link.id}>
                   <button
@@ -81,15 +89,15 @@ const Footer = () => {
 
           {/* Hours */}
           <div>
-            <h4 className="font-medium mb-4">Hours</h4>
+            <h4 className="font-medium mb-4">{t('footer.hours')}</h4>
             <div className="space-y-2 text-sm text-muted-foreground">
               <p>
-                <span className="text-foreground">Mon – Sat</span><br />
-                07:00 AM – 09:00 PM
+                <span className="text-foreground">{t('location.monSat')}</span><br />
+                {t('location.monSatTime')}
               </p>
               <p>
-                <span className="text-foreground">Sunday</span><br />
-                07:00 AM – 05:00 PM
+                <span className="text-foreground">{t('location.sunday')}</span><br />
+                {t('location.sundayTime')}
               </p>
             </div>
           </div>
@@ -101,7 +109,7 @@ const Footer = () => {
         <div className="section-container py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground text-center md:text-left">
-              © {currentYear} Cherish Addis Coffee & Books. All rights reserved.
+              © {currentYear} Cherish Addis Coffee & Books. {t('footer.rights')}
             </p>
             <motion.p 
               className="flex items-center gap-2 text-sm text-muted-foreground"
@@ -109,7 +117,7 @@ const Footer = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
             >
-              <span>We Cherish Life</span>
+              <span>{t('footer.motto')}</span>
               <Heart className="w-4 h-4 text-primary fill-primary" />
             </motion.p>
           </div>
