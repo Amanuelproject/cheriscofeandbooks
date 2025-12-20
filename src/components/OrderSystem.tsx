@@ -4,6 +4,13 @@ import { X, Trash2, ShoppingBag, Clock, User, Mail, Phone, MessageSquare } from 
 import { MenuItem } from './Menu';
 import { toast } from '@/hooks/use-toast';
 import { useLanguage } from '@/i18n/LanguageContext';
+import emailjs from '@emailjs/browser';
+
+// EmailJS Configuration
+const EMAILJS_SERVICE_ID = 'service_xpy2g8e';
+const EMAILJS_CAFE_TEMPLATE_ID = 'template_z4roxwe';
+const EMAILJS_CUSTOMER_TEMPLATE_ID = 'template_6w8wgjt';
+const EMAILJS_PUBLIC_KEY = 'v24iEbEf-xtQcUm0e';
 
 interface OrderItem extends MenuItem {
   quantity: number;
@@ -43,20 +50,73 @@ const OrderSystem = ({ isOpen, onClose, orderItems, onRemoveItem, onClearOrder }
 
   const totalPrice = consolidatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
+  // Format order items for email
+  const formatOrderItems = () => {
+    return consolidatedItems
+      .map(item => `${item.quantity}× ${item.name} — ${item.price * item.quantity} ETB`)
+      .join('\n');
+  };
+
+  // Get current date formatted
+  const getOrderDate = () => {
+    return new Date().toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate order submission
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    const emailParams = {
+      customer_name: formData.name,
+      customer_email: formData.email,
+      customer_phone: formData.phone,
+      order_type: formData.orderType === 'dine-in' ? 'Dine-In' : 'Order Ahead',
+      preferred_time: formData.preferredTime || 'Not specified',
+      special_notes: formData.notes || 'None',
+      order_items: formatOrderItems(),
+      total_price: `${totalPrice} ETB`,
+      order_date: getOrderDate(),
+    };
 
-    setStep('confirmation');
-    setIsSubmitting(false);
-    
-    toast({
-      title: t('order.confirmed'),
-      description: t('order.confirmedDesc'),
-    });
+    try {
+      // Send email to café
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_CAFE_TEMPLATE_ID,
+        emailParams,
+        EMAILJS_PUBLIC_KEY
+      );
+
+      // Send confirmation email to customer
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_CUSTOMER_TEMPLATE_ID,
+        emailParams,
+        EMAILJS_PUBLIC_KEY
+      );
+
+      setStep('confirmation');
+      toast({
+        title: t('order.confirmed'),
+        description: t('order.confirmedDesc'),
+      });
+    } catch (error) {
+      console.error('Email sending failed:', error);
+      toast({
+        title: 'Order Error',
+        description: 'Failed to send order. Please try again or contact us directly.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClose = () => {
