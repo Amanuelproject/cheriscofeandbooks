@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import cafeInterior from '@/assets/cafe-interior-1.png';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface HeroProps {
   onExploreMenu: () => void;
@@ -9,16 +10,31 @@ interface HeroProps {
 
 const Hero = ({ onExploreMenu, onOrderAhead }: HeroProps) => {
   const { t } = useLanguage();
+  const isMobile = useIsMobile();
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
+      {/* Background - Video on mobile, Image on desktop */}
       <div className="absolute inset-0">
-        <img
-          src={cafeInterior}
-          alt="Cherish Addis Coffee & Books interior"
-          className="w-full h-full object-cover"
-        />
+        {isMobile ? (
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            className="w-full h-full object-cover"
+            poster={cafeInterior}
+          >
+            <source src="/hero-mobile.mp4" type="video/mp4" />
+          </video>
+        ) : (
+          <img
+            src={cafeInterior}
+            alt="Cherish Addis Coffee & Books interior"
+            className="w-full h-full object-cover"
+          />
+        )}
         {/* Gradient Overlay */}
         <div className="absolute inset-0 hero-gradient" />
       </div>
