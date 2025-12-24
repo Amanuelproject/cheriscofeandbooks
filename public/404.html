@@ -1,0 +1,15 @@
+/*
+  This file ensures client-side routing works on GitHub Pages by redirecting all requests to index.html.
+  Place this file in your public/ directory.
+*/
+
+const redirectToIndex = () => {
+  const location = window.location;
+  const pathname = location.pathname;
+  // Only redirect if not accessing a file (has extension)
+  if (!pathname.match(/\.[a-zA-Z0-9]+$/)) {
+    location.replace('/index.html');
+  }
+};
+
+redirectToIndex();
